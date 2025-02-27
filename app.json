@@ -1,0 +1,15 @@
+{
+	"name": "BNSCode Plus",
+	"description": "BNSCode Plus",
+	"repository": "https://bnscoder.netlify.app",
+	"logo": "https://bnscoder.netlify.app",
+	"keywords": [
+		"node",
+		"paste",
+		"pastebin",
+		"haste",
+		"hastebin",
+		"code",
+		"syntax highlighting"
+	]
+}
