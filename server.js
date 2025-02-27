@@ -39,63 +39,6 @@ var documentHandler = new DocumentHandler({
   createKey: config.createKey
 });
 
-// Compress static assets
-var cssCompressor = require('clean-css');
-var jsCompressor = require('uglify-js');
-
-// Only compress if files don't exist already
-try {
-  var files = fs.readdirSync(__dirname + '/static');
-  for (var i = 0; i < files.length; i++) {
-    var item = files[i];
-    var itemPath = path.join(__dirname, 'static', item);
-    
-    // Önce öğenin bir dosya olup olmadığını kontrol et
-    var stats = fs.statSync(itemPath);
-    if (!stats.isFile()) {
-      // Eğer dosya değilse (yani dizinse), atla
-      continue;
-    }
-    
-    var dest = "";
-    if ((item.indexOf('.css') === item.length - 4) && (item.indexOf('.min.css') === -1)) {
-      dest = item.substring(0, item.length - 4) + '.min.css';
-      // Check if minified file already exists
-      var destPath = path.join(__dirname, 'static', dest);
-      if (!fs.existsSync(destPath)) {
-        try {
-          var cssContent = fs.readFileSync(itemPath, 'utf8');
-          var minified = new cssCompressor().minify(cssContent).styles;
-          fs.writeFileSync(destPath, minified, 'utf8');
-          logger.verbose('Sıkıştırılmış:: ' + item + ' ==> ' + dest);
-        } catch (error) {
-          logger.error('CSS sıkıştırma hatası:', item, error.message);
-        }
-      }
-    } else if ((item.indexOf('.js') === item.length - 3) && (item.indexOf('.min.js') === -1) && 
-              (item !== 'jquery.min.js') && (item !== 'highlight.min.js')) {
-      dest = item.substring(0, item.length - 3) + '.min.js';
-      // Check if minified file already exists
-      var destPath = path.join(__dirname, 'static', dest);
-      if (!fs.existsSync(destPath)) {
-        try {
-          var jsContent = fs.readFileSync(itemPath, 'utf8');
-          var result = jsCompressor.minify(jsContent);
-          if (result.error) {
-            throw new Error(result.error);
-          }
-          fs.writeFileSync(destPath, result.code, 'utf8');
-          logger.verbose('Sıkıştırılmış:: ' + item + ' ==> ' + dest);
-        } catch (error) {
-          logger.error('JS sıkıştırma hatası:', item, error.message);
-        }
-      }
-    }
-  }
-} catch (err) {
-  logger.error('Dosya sıkıştırma hatası:', err);
-}
-
 // Setup routes and request handling
 var app = express();
 
